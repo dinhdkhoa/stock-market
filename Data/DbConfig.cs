@@ -4,7 +4,7 @@ public static class DbConfig
 {
     public static string GetDbPath()
     {
-        var sqliteFolder = Path.Combine(Directory.GetCurrentDirectory(), "db");
+        var sqliteFolder = Path.Combine(Directory.GetCurrentDirectory(), "Database");
         if (!Directory.Exists(sqliteFolder))
         {
             Directory.CreateDirectory(sqliteFolder);
