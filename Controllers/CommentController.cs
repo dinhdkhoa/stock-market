@@ -25,13 +25,13 @@ public class CommentsController: ControllerBase
         return Ok(comments);
     }
     
-    // [HttpGet("{id:int}")]
-    // public async Task<IActionResult> GetStockById([FromRoute] int id)
-    // {
-    //     var stock = await _repo.GetStockById(id);
-    //     if(stock == null) return NotFound();
-    //     return Ok(stock.ToStockDto());
-    // }
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetCommentById([FromRoute] int id)
+    {
+        var comment = await _repo.GetCommentById(id);
+        if(comment == null) return NotFound();
+        return Ok(comment.ToCommentDto());
+    }
     // [HttpPost]
     // public async Task<IActionResult> Add(StockPostReqDto req)
     // {

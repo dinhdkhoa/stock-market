@@ -15,7 +15,8 @@ public static class StockMappers
             CompanyName = stock.CompanyName,
             Purchase = stock.Purchase,
             LastDiv = stock.LastDiv,
-            MarketCap = stock.MarketCap
+            MarketCap = stock.MarketCap,
+            Comments = stock.Comments.Select(c => c.ToCommentDto()).ToList()
         };
     }public static Stock StockPostReqToStock(this StockPostReqDto req)
     {

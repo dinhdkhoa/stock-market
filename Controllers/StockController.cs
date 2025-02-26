@@ -20,7 +20,7 @@ public class StockController: ControllerBase
     // [Route("")]
     public async Task<IActionResult> GetStocks()
     {
-        var stocksFromDb = await _repo.GetStock();
+        var stocksFromDb = await _repo.GetStocksAsync();
         var stocks = stocksFromDb.Select(
             s => s.ToStockDto());
         return Ok(stocks);
