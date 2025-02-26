@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using stock_market.Data;
+using stock_market.Interfaces;
+using stock_market.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IStockRepository, StockRepository>();
+
 var databasePath = DbConfig.GetDbPath();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
