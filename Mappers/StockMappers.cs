@@ -18,7 +18,8 @@ public static class StockMappers
             MarketCap = stock.MarketCap,
             Comments = stock.Comments.Select(c => c.ToCommentDto()).ToList()
         };
-    }public static Stock StockPostReqToStock(this StockPostReqDto req)
+    }
+    public static Stock StockPostReqToStock(this StockPostReqDto req)
     {
         return new Stock
         {

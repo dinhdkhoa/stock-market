@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using stock_market.Dtos.Comment;
 using stock_market.Interfaces;
 using stock_market.Mappers;
 
@@ -9,10 +10,12 @@ namespace stock_market.Controllers;
 public class CommentsController: ControllerBase
 {
     private readonly ICommentRepository _repo;
+    private readonly IStockRepository _stockRepo;
 
-    public CommentsController(ICommentRepository repo)
+    public CommentsController(ICommentRepository repo, IStockRepository stockRepo)
     {
         _repo = repo;
+        _stockRepo = stockRepo;
     }
 
     [HttpGet]
@@ -29,29 +32,33 @@ public class CommentsController: ControllerBase
     public async Task<IActionResult> GetCommentById([FromRoute] int id)
     {
         var comment = await _repo.GetCommentById(id);
-        if(comment == null) return NotFound();
+        if(comment == null) return NotFound("Comment does not exists");
         return Ok(comment.ToCommentDto());
     }
-    // [HttpPost]
-    // public async Task<IActionResult> Add(StockPostReqDto req)
-    // {
-    //     var newStock = req.StockPostReqToStock();
-    //     await _repo.Create(newStock);
-    //     return CreatedAtAction(nameof(GetStockById), new {id = newStock.Id}, newStock.ToStockDto());
-    // }
-    // [HttpDelete("{id:int}")]
-    // public async Task<IActionResult> Delete([FromRoute] int id)
-    // {
-    //     var stock = await _repo.Delete(id);
-    //     if(stock == null) return NotFound();
-    //     return NoContent();
-    // }
-    // [HttpPut("{id:int}")]
-    // public async Task<IActionResult> Update([FromRoute] int id, [FromBody] StockUpdateReqDto req)
-    //
-    // {
-    //     var stock = await _repo.Update(id, req);
-    //     if(stock == null) return NotFound();
-    //     return Ok(stock.ToStockDto());
-    // }
+    
+    [HttpPost("{stockId:int}")]
+    public async Task<IActionResult> Add(CreateCommentDto req, int stockId)
+    {
+        if (!await _stockRepo.StockIdExists(stockId)) return BadRequest("Comment does not exists");
+        var comment = req.ToCommentFromCreate(stockId);
+        await _repo.CreateComment(comment);
+        return CreatedAtAction(nameof(GetCommentById), new {id = comment.Id}, comment.ToCommentDto());
+    }
+    
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete([FromRoute] int id)
+    {
+        var comment = await _repo.Delete(id);
+        if(comment == null) return NotFound("Comment does not exists");
+        return NoContent();
+    }
+    
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCommentDto req)
+    
+    {
+        var comment = await _repo.UpdateComment(req , id);
+        if(comment == null) return NotFound("Comment does not exists");
+        return Ok(comment.ToCommentDto());
+    }
 }
