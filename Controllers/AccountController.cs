@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using stock_market.Dtos.Account;
+using stock_market.Interfaces;
 using stock_market.Models;
 
 namespace stock_market.Controllers;
@@ -11,9 +12,12 @@ namespace stock_market.Controllers;
 public class AccountController: ControllerBase
 {
     private readonly UserManager<AppUser> _userManager;
-    public AccountController(UserManager<AppUser> userManager)
+    private readonly ITokenService _tokenService;
+
+    public AccountController(UserManager<AppUser> userManager, ITokenService tokenService)
     {
         _userManager = userManager;
+        _tokenService = tokenService;
     }
 
     [HttpPost("register")]
@@ -34,7 +38,16 @@ public class AccountController: ControllerBase
             if (!result.Succeeded) return StatusCode(500, result.Errors);
             
             var roleResult = await _userManager.AddToRoleAsync(appUser, "User");
-            return !roleResult.Succeeded ? StatusCode(500, result.Errors) : Ok("User created");
+            if (!roleResult.Succeeded) return StatusCode(500, roleResult.Errors);
+
+            return Ok(
+                new NewUserDto
+                {
+                    UserName = appUser.UserName,
+                    Email = appUser.Email,
+                    Token = _tokenService.CreateToken(appUser)
+                }
+            );
         }
         catch (Exception e)
         {

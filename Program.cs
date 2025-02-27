@@ -6,6 +6,7 @@ using stock_market.Data;
 using stock_market.Interfaces;
 using stock_market.Models;
 using stock_market.Repository;
+using stock_market.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var databasePath = DbConfig.GetDbPath();
 
