@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using stock_market.Dtos.Stock;
 using stock_market.Helplers;
@@ -35,6 +36,7 @@ public class StockController: ControllerBase
         return Ok(stock.ToStockDto());
     }
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Add(StockPostReqDto req)
     {
         if (!ModelState.IsValid)
