@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using stock_market.Dtos.Stock;
+using stock_market.Helplers;
 using stock_market.Interfaces;
 using stock_market.Mappers;
 
@@ -18,9 +19,9 @@ public class StockController: ControllerBase
 
     [HttpGet]
     // [Route("")]
-    public async Task<IActionResult> GetStocks()
+    public async Task<IActionResult> GetStocks([FromQuery] QueryObject query)
     {
-        var stocksFromDb = await _repo.GetStocksAsync();
+        var stocksFromDb = await _repo.GetStocksAsync(query);
         var stocks = stocksFromDb.Select(
             s => s.ToStockDto());
         return Ok(stocks);

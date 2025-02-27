@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using stock_market.Data;
 using stock_market.Dtos.Stock;
+using stock_market.Helplers;
 using stock_market.Interfaces;
 using stock_market.Models;
 
@@ -15,10 +16,25 @@ public class StockRepository : IStockRepository
 
     }
     
-    public async Task<List<Stock>> GetStocksAsync()
+    public async Task<List<Stock>> GetStocksAsync(QueryObject query)
     {
-        var stocks = await _context.Stocks.Include(s => s.Comments).ToListAsync();
-        return stocks;
+        var stocks = _context.Stocks.Include(s => s.Comments).AsQueryable();
+        if (!string.IsNullOrWhiteSpace(query.CompanyName))
+        {
+            stocks = stocks.Where(x => x.CompanyName.ToLower().Contains(query.CompanyName.ToLower()));
+        }
+        if (!string.IsNullOrWhiteSpace(query.Symbol))
+        {
+            stocks = stocks.Where(x => x.Symbol.ToLower().Contains(query.Symbol.ToLower()));
+        }
+        if (!string.IsNullOrWhiteSpace(query.SortBy))
+        {
+            if (query.SortBy.Equals("Symbol", StringComparison.OrdinalIgnoreCase))
+            {
+                stocks = query.IsDecsending ? stocks.OrderByDescending(s => s.Symbol) : stocks.OrderBy(s => s.Symbol);
+            }
+        }
+        return await stocks.ToListAsync();
     }
 
     public async Task<Stock?> GetStockById(int id)
