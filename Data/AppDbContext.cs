@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using stock_market.Models;
 
 namespace stock_market.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<AppUser>
 {
         public AppDbContext(DbContextOptions dbContextOptions)
             : base(dbContextOptions)
