@@ -45,13 +45,13 @@ namespace stock_market.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "23fdf2f3-646f-4b24-87d8-e2a1e1e3ea45",
+                            Id = "db737a7a-b88b-4080-9691-b448f01fa205",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "b7ebddab-5f32-4520-83e0-b482ac81de4e",
+                            Id = "4f8bb9d4-c3fe-4abb-8607-bec006f8b316",
                             Name = "User",
                             NormalizedName = "USER"
                         });
