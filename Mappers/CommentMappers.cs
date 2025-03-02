@@ -13,6 +13,7 @@ public static class CommentMappers
             Content = comment.Content,
             Title = comment.Title,
             CreatedOn = comment.CreatedOn,
+            CreatedBy = comment.AppUser.UserName,
             StockId = comment.StockId,
             
         };
