@@ -5,9 +5,9 @@ namespace stock_market.Mappers;
 
 public static class StockMappers
 {
-    public static StockDto ToStockDto(this Stock stock)
+    public static PortolioDto ToStockDto(this Stock stock)
     {
-        return new StockDto
+        return new PortolioDto
         {
             Id = stock.Id,
             Symbol = stock.Symbol,

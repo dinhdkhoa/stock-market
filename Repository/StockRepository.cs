@@ -82,4 +82,9 @@ public class StockRepository : IStockRepository
     {
         return _context.Stocks.AnyAsync(x => x.Id == id);
     }
+
+    public async Task<Stock?> GetStockBySymbol(string symbol)
+    {
+        return await _context.Stocks.FirstOrDefaultAsync(s => s.Symbol.ToLower() == symbol.ToLower());
+    }
 }

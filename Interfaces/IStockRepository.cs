@@ -8,6 +8,8 @@ public interface IStockRepository
 {
     Task<List<Stock>> GetStocksAsync(QueryObject query);
     Task<Stock?> GetStockById(int id);
+    Task<Stock?> GetStockBySymbol(string symbol);
+
     Task<Stock?> Create(Stock stock);
     Task<Stock?> Update(int id, StockUpdateReqDto req);
     Task<Stock?> Delete(int id);

@@ -2,7 +2,7 @@ using stock_market.Dtos.Comment;
 
 namespace stock_market.Dtos.Stock;
 
-public class PortolioDto
+public class PortfolioDto
 {
     public int Id { get; set; }
     public string Symbol { get; set; } = string.Empty;
@@ -11,7 +11,5 @@ public class PortolioDto
     public decimal LastDiv { get; set; }
     public string Industry { get; set; } = string.Empty;
     public long MarketCap { get; set; }
-    
-    public List<CommentDto> Comments { get; set; } = [];
 
 }
