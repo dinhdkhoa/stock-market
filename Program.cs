@@ -108,7 +108,12 @@ app.UseAuthorization();
 app.MapControllers();
 app.UseHttpsRedirection();
 
-
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials()
+    //.WithOrigins("https://localhost:44351))
+    .SetIsOriginAllowed(origin => true));
 
 app.Run();
 
