@@ -13,9 +13,9 @@ namespace stock_market.Controllers;
 public class StockController: ControllerBase
 {
     private readonly IStockRepository _repo;
-    private readonly IFMPService _fmpService;
+    private readonly IFmpService _fmpService;
 
-    public StockController( IStockRepository repo, IFMPService fmpService)
+    public StockController( IStockRepository repo, IFmpService fmpService)
     {
         _repo = repo;
         _fmpService = fmpService;
@@ -34,9 +34,9 @@ public class StockController: ControllerBase
     [Route("{symbol}")]
     public async Task<IActionResult> GetStocks([FromRoute] string symbol)
     {
-        var stock = await _fmpService.GetFMPStock(symbol);
+        var stock = await _repo.GetStockBySymbol(symbol);
         if(stock == null) return NotFound();
-        return Ok(stock);
+        return Ok(stock.ToStockDto());
     }
     
     [HttpGet("{id:int}")]

@@ -3,17 +3,20 @@ using stock_market.Data;
 using stock_market.Dtos.Stock;
 using stock_market.Helplers;
 using stock_market.Interfaces;
+using stock_market.Mappers;
 using stock_market.Models;
+using stock_market.Service;
 
 namespace stock_market.Repository;
 
 public class StockRepository : IStockRepository
 {
     private readonly AppDbContext _context;
-    public StockRepository(AppDbContext context)
+    private readonly FmpService _fmp;
+    public StockRepository(AppDbContext context, FmpService fmp)
     {
         _context = context;
-
+        _fmp = fmp;
     }
     
     public async Task<List<Stock>> GetStocksAsync(QueryObject query)
@@ -85,6 +88,14 @@ public class StockRepository : IStockRepository
 
     public async Task<Stock?> GetStockBySymbol(string symbol)
     {
-        return await _context.Stocks.FirstOrDefaultAsync(s => s.Symbol.ToLower() == symbol.ToLower());
+        var stock = await _context.Stocks.FirstOrDefaultAsync(s => s.Symbol.ToLower() == symbol.ToLower());
+        if (stock == null)
+        {
+            var fmpStock  = await _fmp.GetFmpStock(symbol);
+            stock = fmpStock.ToStockFromFmp();
+            await Create(stock);
+        }
+        
+        return stock;
     }
 }

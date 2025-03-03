@@ -4,18 +4,18 @@ using stock_market.Models;
 
 namespace stock_market.Service;
 
-public class FMPService : IFMPService
+public class FmpService : IFmpService
 {
     private readonly HttpClient _http;
     private readonly IConfiguration _config;
 
-    public FMPService(HttpClient http,IConfiguration config)
+    public FmpService(HttpClient http,IConfiguration config)
     {
         _http = http;
         _config = config;
     }
     
-    public async Task<FMPStock?> GetFMPStock(string symbol)
+    public async Task<FmpStock?> GetFmpStock(string symbol)
     {
         try
         {
@@ -26,7 +26,7 @@ public class FMPService : IFMPService
             if (response.IsSuccessStatusCode)
             {
                 var jsonData = await response.Content.ReadAsStringAsync();
-                var stocks = JsonConvert.DeserializeObject<List<FMPStock>>(jsonData);
+                var stocks = JsonConvert.DeserializeObject<List<FmpStock>>(jsonData);
 
                 return stocks?.FirstOrDefault(x => x.symbol == symbol);
             }

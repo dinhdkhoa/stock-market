@@ -19,6 +19,21 @@ public static class StockMappers
             Comments = stock.Comments.Select(c => c.ToCommentDto()).ToList()
         };
     }
+    
+    public static Stock ToStockFromFmp(this FmpStock fmp)
+    {
+        var a = fmp;
+        return new Stock
+        {
+            Symbol = fmp.symbol,
+            Industry = fmp.industry,
+            CompanyName = fmp.companyName,
+            Purchase = (decimal)fmp.price,
+            LastDiv = (decimal)fmp.lastDiv,
+            MarketCap = fmp.mktCap ?? 0,
+        };
+    }
+    
     public static Stock StockPostReqToStock(this StockPostReqDto req)
     {
         return new Stock

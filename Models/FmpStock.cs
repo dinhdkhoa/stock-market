@@ -1,11 +1,11 @@
 namespace stock_market.Models
 {
-    public class FMPStock
+    public class FmpStock
     {
         public string? symbol { get; set; }
         public double? price { get; set; }
         public double? beta { get; set; }
-        public int? volAvg { get; set; }
+        public double? volAvg { get; set; }
         public long? mktCap { get; set; }
         public double? lastDiv { get; set; }
         public string? range { get; set; }
