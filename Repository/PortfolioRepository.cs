@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using stock_market.Data;
 using stock_market.Dtos.Comment;
+using stock_market.Dtos.Stock;
 using stock_market.Interfaces;
 using stock_market.Models;
 
@@ -37,17 +38,17 @@ public class PortfolioRepository : IPortfolioRepository
         return portfolioModel;
     }
 
-    public async Task<List<Stock>> GetPorfolios(AppUser user)
+    public async Task<List<PortfolioDto>> GetPorfolios(AppUser user)
     {
-        return await _context.Portfolios.Where(u => u.AppUserId == user.Id).Select(stock => new Stock
+        return await _context.Portfolios.Where(u => u.AppUserId == user.Id).Select(p => new PortfolioDto()
         {
-            Id = stock.StockId,
-            Symbol = stock.Stock.Symbol,
-            CompanyName = stock.Stock.CompanyName,
-            Purchase = stock.Stock.Purchase,
-            LastDiv = stock.Stock.LastDiv,
-            Industry = stock.Stock.Industry,
-            MarketCap = stock.Stock.MarketCap
+            Id = p.StockId,
+            Symbol = p.Stock.Symbol,
+            CompanyName = p.Stock.CompanyName,
+            Purchase = p.Stock.Purchase,
+            LastDiv = p.Stock.LastDiv,
+            Industry = p.Stock.Industry,
+            MarketCap = p.Stock.MarketCap
         }).ToListAsync();
 
     }

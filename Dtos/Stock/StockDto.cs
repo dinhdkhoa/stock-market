@@ -2,7 +2,7 @@ using stock_market.Dtos.Comment;
 
 namespace stock_market.Dtos.Stock;
 
-public class PortolioDto
+public class StockDto
 {
     public int Id { get; set; }
     public string Symbol { get; set; } = string.Empty;

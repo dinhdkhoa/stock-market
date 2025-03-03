@@ -18,7 +18,7 @@ public class StockRepository : IStockRepository
     
     public async Task<List<Stock>> GetStocksAsync(QueryObject query)
     {
-        var stocks = _context.Stocks.Include(s => s.Comments).AsQueryable();
+        var stocks = _context.Stocks.Include(s => s.Comments).ThenInclude(c => c.AppUser).AsQueryable();
         if (!string.IsNullOrWhiteSpace(query.CompanyName))
         {
             stocks = stocks.Where(x => x.CompanyName.ToLower().Contains(query.CompanyName.ToLower()));
