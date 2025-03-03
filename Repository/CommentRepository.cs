@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using stock_market.Data;
 using stock_market.Dtos.Comment;
+using stock_market.Helplers;
 using stock_market.Interfaces;
 using stock_market.Models;
 
@@ -16,10 +17,19 @@ public class CommentRepository : ICommentRepository
 
     }
 
-    public async Task<List<Comment>> GetCommentsAsync()
+    public async Task<List<Comment>> GetCommentsAsync(CommentQueryObject queryObject)
     {
-        var comments = await _context.Comments.Include(c => c.AppUser).ToListAsync();
-        return comments;
+        var query = _context.Comments.Include(c => c.AppUser).AsQueryable();
+        if (!string.IsNullOrWhiteSpace(queryObject.Symbol))
+        {
+            query = query.Where(c => c.Stock.Symbol.ToLower().Contains(queryObject.Symbol.ToLower()));
+        }
+        if (queryObject.IsDecsending == true)
+        {
+            query = query.OrderByDescending(c => c.CreatedOn);
+        }
+
+        return await query.ToListAsync();
     }
 
     public async Task<Comment?> GetCommentById(int id)

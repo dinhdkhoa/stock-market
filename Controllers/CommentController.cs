@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using stock_market.Dtos.Comment;
 using stock_market.Extensions;
+using stock_market.Helplers;
 using stock_market.Interfaces;
 using stock_market.Mappers;
 using stock_market.Models;
@@ -27,11 +28,11 @@ public class CommentsController: ControllerBase
 
     [HttpGet]
     // [Route("")]
-    public async Task<IActionResult> GetComments()
+    public async Task<IActionResult> GetComments([FromQuery]CommentQueryObject queryObject)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
-        var commentsFromDb = await _repo.GetCommentsAsync();
+        var commentsFromDb = await _repo.GetCommentsAsync(queryObject);
         var comments = commentsFromDb.Select(
             s => s.ToCommentDto());
         return Ok(comments);
