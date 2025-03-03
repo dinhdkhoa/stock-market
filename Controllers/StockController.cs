@@ -4,6 +4,7 @@ using stock_market.Dtos.Stock;
 using stock_market.Helplers;
 using stock_market.Interfaces;
 using stock_market.Mappers;
+using stock_market.Service;
 
 namespace stock_market.Controllers;
 
@@ -12,10 +13,12 @@ namespace stock_market.Controllers;
 public class StockController: ControllerBase
 {
     private readonly IStockRepository _repo;
+    private readonly IFMPService _fmpService;
 
-    public StockController( IStockRepository repo)
+    public StockController( IStockRepository repo, IFMPService fmpService)
     {
         _repo = repo;
+        _fmpService = fmpService;
     }
 
     [HttpGet]
@@ -26,6 +29,14 @@ public class StockController: ControllerBase
         var stocks = stocksFromDb.Select(
             s => s.ToStockDto());
         return Ok(stocks);
+    }
+    [HttpGet]
+    [Route("{symbol}")]
+    public async Task<IActionResult> GetStocks([FromRoute] string symbol)
+    {
+        var stock = await _fmpService.GetFMPStock(symbol);
+        if(stock == null) return NotFound();
+        return Ok(stock);
     }
     
     [HttpGet("{id:int}")]
