@@ -7,17 +7,16 @@ using stock_market.Models;
 
 namespace stock_market.Service;
 
-public class TokenService: ITokenService
+public class TokenService : ITokenService
 {
     private readonly IConfiguration _config;
-    private readonly SymmetricSecurityKey _key;
 
     public TokenService(IConfiguration config)
     {
         _config = config;
-        _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:SigningKey"]));
     }
-    public string CreateToken(AppUser user)
+
+    public string CreateToken(AppUser user, CreateTokenParams options)
     {
         var claims = new List<Claim>
         {
@@ -25,12 +24,12 @@ public class TokenService: ITokenService
             new Claim(JwtRegisteredClaimNames.GivenName, user.UserName)
         };
 
-        var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
+        var creds = new SigningCredentials(options.key, SecurityAlgorithms.HmacSha512Signature);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.Now.AddDays(7),
+            Expires = options.expires,
             SigningCredentials = creds,
             Issuer = _config["JWT:Issuer"],
             Audience = _config["JWT:Audience"]
@@ -42,4 +41,63 @@ public class TokenService: ITokenService
 
         return tokenHandler.WriteToken(token);
     }
+
+    public string CreateAccessToken(AppUser user)
+    {
+        var tokenInfo = new CreateTokenParams
+        {
+            key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:SigningKey"])),
+            expires = DateTime.Now.AddDays(7)
+        };
+        return CreateToken(user, tokenInfo);
+    }
+
+    public string CreateRefreshToken(AppUser user, DateTime? expiresTime = null)
+    {
+        if (!expiresTime.HasValue)
+        {
+            expiresTime = DateTime.Now.AddMonths(1);
+        }
+        var tokenInfo = new CreateTokenParams
+        {
+            key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:SigningKeyRF"])),
+            expires = (DateTime)expiresTime
+        };
+       return CreateToken(user, tokenInfo);
+    }
+    
+    public bool ValidateRefreshToken(
+        string token,
+        out JwtSecurityToken jwt
+    )
+    {
+        // {
+        //     "username": "string4",
+        //     "email": "user4@example.com",
+        //     "password": "String1!"
+        // }
+        var key = _config["JWT:SigningKey"];
+        var validationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = _config["JWT:Issuer"],
+            ValidateAudience = true,
+            ValidAudience = _config["JWT:Audience"],
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:SigningKeyRF"]))
+        };
+
+        try
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+            jwt = (JwtSecurityToken)validatedToken;
+    
+            return true;
+        } catch (SecurityTokenValidationException ex) {
+            jwt = null;
+            return false;
+        }
+    }
+    
 }

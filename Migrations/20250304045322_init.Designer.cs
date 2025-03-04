@@ -11,8 +11,8 @@ using stock_market.Data;
 namespace stock_market.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250302003728_CommentOnetoOne")]
-    partial class CommentOnetoOne
+    [Migration("20250304045322_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,13 +48,13 @@ namespace stock_market.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "4cdf0aa4-bd85-4042-9276-c33205ce38ee",
+                            Id = "cb60811d-da3c-4663-8e98-de646a7c2eb6",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "3596841e-ad76-406e-9356-b76d84c28c01",
+                            Id = "4654ffb3-d0b5-4010-bb9d-f18472b1e332",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -273,6 +273,26 @@ namespace stock_market.Migrations
                     b.ToTable("Portfolios");
                 });
 
+            modelBuilder.Entity("stock_market.Models.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("RefreshToken");
+                });
+
             modelBuilder.Entity("stock_market.Models.Stock", b =>
                 {
                     b.Property<int>("Id")
@@ -390,9 +410,20 @@ namespace stock_market.Migrations
                     b.Navigation("Stock");
                 });
 
+            modelBuilder.Entity("stock_market.Models.RefreshToken", b =>
+                {
+                    b.HasOne("stock_market.Models.AppUser", "AppUser")
+                        .WithMany("tokens")
+                        .HasForeignKey("AppUserId");
+
+                    b.Navigation("AppUser");
+                });
+
             modelBuilder.Entity("stock_market.Models.AppUser", b =>
                 {
                     b.Navigation("Portfolios");
+
+                    b.Navigation("tokens");
                 });
 
             modelBuilder.Entity("stock_market.Models.Stock", b =>
