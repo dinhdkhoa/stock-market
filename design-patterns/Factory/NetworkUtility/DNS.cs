@@ -1,6 +1,6 @@
 namespace design_patterns.Factory.NetworkUtility;
 
-public class DNS
+public class DNS : INetwork
 {
     public void SendRequest(string ip, int timeSent)
     {
