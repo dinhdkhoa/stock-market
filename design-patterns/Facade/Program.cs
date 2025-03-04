@@ -1,7 +1,7 @@
 
 using design_patterns.Facade;
 
-internal class Program
+internal partial class Program
 {
     public static void Main(string[] args)
     {
