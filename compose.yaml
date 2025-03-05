@@ -1,6 +1,0 @@
-﻿services:
-  stock-market:
-    image: stock-market
-    build:
-      context: .
-      dockerfile: Dockerfile
